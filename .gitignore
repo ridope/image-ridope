@@ -1,3 +1,28 @@
+#Litex install folders
+litedram/
+liteeth/
+litehyperbus/
+liteiclink/
+litejesd204b/
+litepcie/
+litesata/
+litescope/
+litesdcard/
+litespi/
+litex-boards/
+migen/
+pythondata-cpu-lm32/
+pythondata-cpu-mor1kx/
+pythondata-cpu-serv/
+pythondata-cpu-vexriscv-smp/
+pythondata-cpu-vexriscv/
+pythondata-misc-tapcfg/
+pythondata-misc-usb_ohci/
+pythondata-software-compiler_rt/
+pythondata-software-picolibc/
+riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-ubuntu14.tar.gz
+riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-ubuntu14/
+
 # Prerequisites
 *.d
 
