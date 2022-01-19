@@ -1,1 +1,5 @@
 
+[submodule "litex-inst/litex"]
+	path = litex-inst/litex
+	url = https://github.com/enjoy-digital/litex.git
+	branch = 2021.12
