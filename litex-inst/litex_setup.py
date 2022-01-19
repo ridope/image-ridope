@@ -167,6 +167,7 @@ def litex_setup_init_repos(config="standard", dev_mode=False):
     print_status("--------------------------------")
     for name in install_configs[config]:
         repo = git_repos[name]
+
         os.chdir(os.path.join(current_path))
         if not os.path.exists(name):
             # Clone Repo.
@@ -214,6 +215,18 @@ def litex_setup_update_repos(config="standard"):
         if repo.sha1 is not None:
             os.chdir(os.path.join(current_path, name))
             os.system(f"git checkout {repo.sha1:07x}")
+
+        os.chdir(os.path.join(current_path))
+
+        repo_url = repo.url
+
+        
+        latest_tag = str(latest_tag).strip()
+
+        subprocess.check_call("git submodule add {options} {url}".format(
+                options = "-f -b " + latest_tag if latest_tag != "" else "-f",
+                url = repo_url + name + ".git"
+                ), shell=True)
 
 # Git repositories install -------------------------------------------------------------------------
 
