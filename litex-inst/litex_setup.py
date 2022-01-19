@@ -172,10 +172,11 @@ def litex_setup_init_repos(config="standard", dev_mode=False):
             # Clone Repo.
             print_status(f"Cloning {name} Git repository...")
             repo_url = repo.url
-            #if dev_mode:
-                #repo_url = repo_url.replace("https://github.com/", "git@github.com:")
-            subprocess.check_call("git submodule add {url}".format(
-                url     = repo_url + name + ".git"
+            if dev_mode:
+                repo_url = repo_url.replace("https://github.com/", "git@github.com:")
+            subprocess.check_call("git clone {url} {options}".format(
+                url     = repo_url + name + ".git",
+                options = "--recursive" if repo.clone == "recursive" else ""
                 ), shell=True)
             # Use specific SHA1 (Optional).
             if repo.sha1 is not None:
@@ -199,8 +200,13 @@ def litex_setup_update_repos(config="standard"):
         # Update Repo.
         print_status(f"Updating {name} Git repository...")
         os.chdir(os.path.join(current_path, name))
-        subprocess.check_call("git checkout " + repo.branch, shell=True)
-        subprocess.check_call("git pull --ff-only", shell=True)
+        subprocess.check_call("git fetch --tags", shell=True)
+        p = subprocess.run("git describe --tags `git rev-list --tags --max-count=1`", shell=True, stdout=subprocess.PIPE)
+        
+        latest_tag = p.stdout.decode()
+        
+        subprocess.check_call("git checkout " + latest_tag, shell=True)
+        #subprocess.check_call("git pull --ff-only", shell=True)
         # Recursive Update (Optional).
         if repo.clone == "recursive":
             subprocess.check_call("git submodule update --init --recursive", shell=True)
