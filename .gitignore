@@ -1,4 +1,5 @@
-#Litex install folders
+#Project build folder
+target/build/*
 
 
 # Prerequisites
