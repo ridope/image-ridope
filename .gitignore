@@ -1,6 +1,8 @@
 #Project build folder
 target/build/*
 
+#Litex folder
+litex-inst/*
 
 # Prerequisites
 *.d
