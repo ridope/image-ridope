@@ -1,0 +1,17 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "serial_tx",
+					"strict" : false
+				},
+				{
+					"name" : "serial_rx",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

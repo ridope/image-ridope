@@ -1,0 +1,18 @@
+Fitter Status : Successful - Thu Jan 20 17:58:06 2022
+Quartus Prime Version : 18.1.0 Build 625 09/12/2018 SJ Lite Edition
+Revision Name : terasic_de10lite
+Top-level Entity Name : terasic_de10lite
+Family : MAX 10
+Device : 10M50DAF484C7G
+Timing Models : Final
+Total logic elements : 3,674 / 49,760 ( 7 % )
+    Total combinational functions : 3,332 / 49,760 ( 7 % )
+    Dedicated logic registers : 1,797 / 49,760 ( 4 % )
+Total registers : 1797
+Total pins : 3 / 360 ( < 1 % )
+Total virtual pins : 0
+Total memory bits : 565,152 / 1,677,312 ( 34 % )
+Embedded Multiplier 9-bit elements : 8 / 288 ( 3 % )
+Total PLLs : 1 / 4 ( 25 % )
+UFM blocks : 0 / 1 ( 0 % )
+ADC blocks : 0 / 2 ( 0 % )
