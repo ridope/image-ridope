@@ -1,0 +1,14 @@
+{
+    "python.analysis.extraPaths": [
+        "C:\\Users\\lucas\\Desktop\\2022.1\\InnovR\\image-ridope\\litex-inst",
+        "C:\\Users\\lucas\\Desktop\\2022.1\\InnovR\\image-ridope\\litex-inst\\riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-ubuntu14\\bin",
+        "./litex-inst/litex-boards",
+        "./litex-inst/migen",
+        "./litex-inst/litex",
+        "./litex-inst/litedram"
+    ],
+    "files.associations": {
+        "csr.h": "c",
+        "random": "cpp"
+    }
+}

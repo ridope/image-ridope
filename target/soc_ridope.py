@@ -8,6 +8,10 @@
 
 import os
 import argparse
+from litex.build import io
+from litex.soc.cores.gpio import GPIOOut, GPIOTristate
+from litex.soc.cores.led import LedChaser
+from litex_boards.platforms.muselab_icesugar import led_pmod_io_v11
 
 from migen import *
 from migen.genlib.resetsync import AsyncResetSynchronizer
@@ -18,6 +22,23 @@ from litex.soc.cores.clock import Max10PLL
 from litex.soc.integration.soc import SoCRegion
 from litex.soc.integration.soc_core import *
 from litex.soc.integration.builder import *
+from litex.build.generic_platform import *
+
+_io = [
+
+    # Leds
+    ("user_led", 0, Pins("A8"),  IOStandard("3.3-V LVTTL")),
+    ("user_led", 1, Pins("A9"),  IOStandard("3.3-V LVTTL")),
+    ("user_led", 2, Pins("A10"), IOStandard("3.3-V LVTTL")),
+    ("user_led", 3, Pins("B10"), IOStandard("3.3-V LVTTL")),
+    ("user_led", 4, Pins("D13"), IOStandard("3.3-V LVTTL")),
+    ("user_led", 5, Pins("C13"), IOStandard("3.3-V LVTTL")),
+    ("user_led", 6, Pins("E14"), IOStandard("3.3-V LVTTL")),
+    ("user_led", 7, Pins("D14"), IOStandard("3.3-V LVTTL")),
+    ("user_led", 8, Pins("A11"), IOStandard("3.3-V LVTTL")),
+    ("user_led", 9, Pins("B11"), IOStandard("3.3-V LVTTL"))
+
+]
 
 class _CRG(Module): # Clock Region definition
     def __init__(self, platform, sys_clk_freq):
@@ -43,12 +64,28 @@ class BaseSoC(SoCCore): # SoC definition - memory sizes are overloaded
         kwargs["integrated_sram_size"] = 0x2000 # chose sram size, holding stack and heap. (min = 0x6000)
         kwargs["integrated_main_ram_size"] = 0x8000 # 0 means external RAM is used, non 0 allocates main RAM internally
 
+        
+
         SoCCore.__init__(self, platform, sys_clk_freq,
             ident          = "LiteX SoC on DE10-Lite",
             ident_version  = True,
             **kwargs)
 
         self.submodules.crg = _CRG(platform, sys_clk_freq) # CRG instanciation
+
+       
+        led = platform.request_all("user_led")
+        gpio = platform.request_all("gpio_0")
+
+        # Led ------------------------------------------------------------------------------------
+        self.submodules.leds = LedChaser(led, sys_clk_freq)
+        self.add_csr("leds")
+
+        # GPIOs ------------------------------------------------------------------------------------
+        self.submodules.gpio = GPIOOut(gpio)
+        self.add_csr("gpio")
+
+
 
 def main(): # Instanciating the SoC and options
     parser = argparse.ArgumentParser(description="LiteX SoC on DE10-Lite")
@@ -63,6 +100,7 @@ def main(): # Instanciating the SoC and options
     soc = BaseSoC(
         sys_clk_freq        = int(float(args.sys_clk_freq)),
         with_video_terminal = args.with_video_terminal,
+        
         **soc_core_argdict(args)
     )
     builder = Builder(soc, **builder_argdict(args))
