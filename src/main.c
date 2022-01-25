@@ -87,6 +87,7 @@ static void help(void)
 	puts("led                - Led demo");
 #endif
 	puts("donut              - Spinning Donut demo");
+	puts("7seg             	 - Seven Segments");
 	puts("helloc             - Hello C");
 #ifdef WITH_CXX
 	puts("hellocpp           - Hello C++");
@@ -160,6 +161,19 @@ static void gpioc_cmd(void)
 	}
 }
 
+extern void sevenseg(void);
+
+static void sevenseg_cmd(void)
+{
+	char display_seg[] = {0x3F, 0x06, 0x5B,0x4F};
+	for(int i=0; i<sizeof(display_seg); i++) {
+		
+		seven_out_write(~display_seg[i]);
+		busy_wait(500);
+	}
+	seven_out_write(0xFF);
+}
+
 #ifdef WITH_CXX
 extern void hellocpp(void);
 
@@ -200,7 +214,10 @@ static void console_service(void)
 #endif
 	else if(strcmp(token, "gpioc") == 0)
 		gpioc_cmd();
-	prompt();
+	
+	else if(strcmp(token, "7seg") == 0)
+		sevenseg_cmd();
+	prompt();	
 }
 
 int main(void)

@@ -64,26 +64,27 @@ class BaseSoC(SoCCore): # SoC definition - memory sizes are overloaded
         kwargs["integrated_sram_size"] = 0x2000 # chose sram size, holding stack and heap. (min = 0x6000)
         kwargs["integrated_main_ram_size"] = 0x8000 # 0 means external RAM is used, non 0 allocates main RAM internally
 
-        
-
         SoCCore.__init__(self, platform, sys_clk_freq,
             ident          = "LiteX SoC on DE10-Lite",
             ident_version  = True,
             **kwargs)
 
-        self.submodules.crg = _CRG(platform, sys_clk_freq) # CRG instanciation
-
-       
-        led = platform.request_all("user_led")
-        gpio = platform.request_all("gpio_0")
-
+        self.submodules.crg = _CRG(platform, sys_clk_freq) # CRG instanciation     
+        
         # Led ------------------------------------------------------------------------------------
+        led = platform.request_all("user_led")
         self.submodules.leds = LedChaser(led, sys_clk_freq)
         self.add_csr("leds")
 
         # GPIOs ------------------------------------------------------------------------------------
+        gpio = platform.request_all("gpio_0")
         self.submodules.gpio = GPIOOut(gpio)
         self.add_csr("gpio")
+
+        # 7SEGMENT ------------------------------------------------------------------------------------
+        seg =  platform.request("seven_seg")
+        self.submodules.seven = LedChaser(seg, sys_clk_freq)
+        
 
 
 
