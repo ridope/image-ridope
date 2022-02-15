@@ -4,7 +4,7 @@ include $(BUILD_DIR)/software/include/generated/variables.mak
 include $(SOC_DIRECTORY)/software/common.mak
 
 
-OBJECTS   = isr.o donut.o helloc.o main.o crt0.o
+OBJECTS   = fft-dif.o hello.o isr.o helloc.o main.o crt0.o 
 ifdef WITH_CXX
 	OBJECTS += hellocpp.o
 endif
@@ -24,7 +24,8 @@ demo.elf: $(OBJECTS)
 		-N -o $@ \
 		$(OBJECTS) \
 		$(PACKAGES:%=-L$(BUILD_DIR)/software/%) \
-		$(LIBS:lib%=-l%)
+		$(LIBS:lib%=-l%) \
+		-lgcc
 	chmod -x $@
 
 main.o: main.c
@@ -32,8 +33,6 @@ main.o: main.c
 
 crt0.o: $(CPU_DIRECTORY)/crt0.S
 	$(assemble)
-
-donut.o: CFLAGS += -w
 
 helloc.o: CFLAGS += -w
 

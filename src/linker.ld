@@ -58,6 +58,8 @@ SECTIONS
 	} > sram
 }
 
+PROVIDE(__heap_start = _end );
+PROVIDE(__heap_end = _start);
 PROVIDE(_fstack = ORIGIN(sram) + LENGTH(sram));
 
 PROVIDE(_fdata_rom = LOADADDR(.data));
