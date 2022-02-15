@@ -90,7 +90,12 @@ static void help(void)
 #ifdef CSR_LEDS_BASE
 	puts("led                - Led demo");
 #endif
+<<<<<<< HEAD
 	//puts("donut              - Spinning Donut demo");
+=======
+	puts("donut              - Spinning Donut demo");
+	puts("7seg             	 - Seven Segments");
+>>>>>>> c10357aff4c5a13b4f8b56286fe22a4a6ba21810
 	puts("helloc             - Hello C");
 	puts("fft 				- FFT");
 #ifdef WITH_CXX
@@ -230,7 +235,10 @@ static void console_service(void)
 #endif
 	else if(strcmp(token, "gpioc") == 0)
 		gpioc_cmd();
-	prompt();
+	
+	else if(strcmp(token, "7seg") == 0)
+		sevenseg_cmd();
+	prompt();	
 }
 
 int main(void)

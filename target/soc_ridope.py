@@ -69,19 +69,22 @@ class BaseSoC(SoCCore): # SoC definition - memory sizes are overloaded
             ident_version  = True,
             **kwargs)
 
-        self.submodules.crg = _CRG(platform, sys_clk_freq) # CRG instanciation
-
-       
-        led = platform.request_all("user_led")
-        gpio = platform.request_all("gpio_0")
-
+        self.submodules.crg = _CRG(platform, sys_clk_freq) # CRG instanciation     
+        
         # Led ------------------------------------------------------------------------------------
+        led = platform.request_all("user_led")
         self.submodules.leds = LedChaser(led, sys_clk_freq)
         self.add_csr("leds")
 
         # GPIOs ------------------------------------------------------------------------------------
+        gpio = platform.request_all("gpio_0")
         self.submodules.gpio = GPIOOut(gpio)
         self.add_csr("gpio")
+
+        # 7SEGMENT ------------------------------------------------------------------------------------
+        seg =  platform.request("seven_seg")
+        self.submodules.seven = LedChaser(seg, sys_clk_freq)
+        
 
 
 
