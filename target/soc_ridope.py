@@ -61,10 +61,8 @@ class BaseSoC(SoCCore): # SoC definition - memory sizes are overloaded
         #These kwargs overwrite the value find on soc / soc_core
         #So you can change here the sizes of the different memories
         kwargs["integrated_rom_size"] = 0x8000 # chose rom size, holding bootloader (min = 0x6000)
-        kwargs["integrated_sram_size"] = 0x2000 # chose sram size, holding stack and heap. (min = 0x6000)
-        kwargs["integrated_main_ram_size"] = 0x8000 # 0 means external RAM is used, non 0 allocates main RAM internally
-
-        
+        kwargs["integrated_sram_size"] = 0x8000 # chose sram size, holding stack and heap. (min = 0x6000)
+        kwargs["integrated_main_ram_size"] = 0x10000 # 0 means external RAM is used, non 0 allocates main RAM internally
 
         SoCCore.__init__(self, platform, sys_clk_freq,
             ident          = "LiteX SoC on DE10-Lite",
