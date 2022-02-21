@@ -9,6 +9,17 @@
     ],
     "files.associations": {
         "csr.h": "c",
-        "random": "cpp"
+        "random": "cpp",
+        "fft.h": "c",
+        "complex.h": "c",
+        "console.h": "c",
+        "*.def": "c",
+        "hello.h": "c",
+        "cdefs.h": "c",
+        "*.inc": "c",
+        "uart.h": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "stdlib.h": "c"
     }
 }

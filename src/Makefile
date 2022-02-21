@@ -3,6 +3,8 @@ BUILD_DIR?=../build/
 include $(BUILD_DIR)/software/include/generated/variables.mak
 include $(SOC_DIRECTORY)/software/common.mak
 
+DEPFLAGS+=-DPICOLIBC_FLOAT_PRINTF_SCANF
+
 
 OBJECTS   = fft-dif.o hello.o isr.o helloc.o main.o crt0.o 
 ifdef WITH_CXX

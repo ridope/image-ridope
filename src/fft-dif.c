@@ -89,12 +89,6 @@ int fft(float complex *vector, size_t N)
 	b = fft_reverse(b, buffers, N);
 	b = nop_reverse(b, buffers, N);
 
-	float complex *test = buffers[0];
-
-	for(int i=0; i<N; i++) {
-		printf("%f + i%f\n", creal(test[i]), cimag(test[i]));
-	}
-
 	memmove(vector, buffers[b&1], N*sizeof(float complex));
 
 	free( buffers[1] );

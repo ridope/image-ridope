@@ -9,6 +9,7 @@
 import os
 import argparse
 from litex.build import io
+from litex.soc.doc import generate_docs, generate_svd
 from litex.soc.cores.gpio import GPIOOut, GPIOTristate
 from litex.soc.cores.led import LedChaser
 from litex_boards.platforms.muselab_icesugar import led_pmod_io_v11
@@ -106,6 +107,11 @@ def main(): # Instanciating the SoC and options
     )
     builder = Builder(soc, **builder_argdict(args))
     builder.build(run=args.build)
+    soc.do_exit(builder)
+    generate_docs(soc, "build/documentation",
+                        project_name="My SoC",
+                        author="LiteX User")
+    generate_svd(soc, "build/documentation")
 
     if args.load:
         prog = soc.platform.create_programmer()
