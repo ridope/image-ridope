@@ -20,6 +20,7 @@
         "uart.h": "c",
         "stdio.h": "c",
         "string.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "ift.h": "c"
     }
 }

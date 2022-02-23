@@ -13,6 +13,9 @@
 #include "complex.h"
 #include "hello.h"
 #include "fft.h"
+#include "ift.h"
+
+static float complex * read_img(void);
 
 /*-----------------------------------------------------------------------*/
 /* Uart                                                                  */
@@ -90,9 +93,7 @@ static void help(void)
 #ifdef CSR_LEDS_BASE
 	puts("led                - Led demo");
 #endif
-	puts("donut              - Spinning Donut demo");
 	puts("7seg             	 - Seven Segments");
-	puts("helloc             - Hello C");
 	puts("fft 				- FFT");
 #ifdef WITH_CXX
 	puts("hellocpp           - Hello C++");
@@ -140,30 +141,21 @@ static void led_cmd(void)
 }
 #endif
 
-//extern void donut(void);
-
-/*static void donut_cmd(void)
-{
-	printf("Donut demo...\n");
-	donut();
-}*/
-
-extern void helloc(void);
-
-static void helloc_cmd(void)
-{
-	
-	int teste = oi();
-	printf("Hello C demo...%d\n", teste);
-}
-
 static void fft_cmd(void)
 {
-	float complex sig[64] = {1,0.951056516295154,0.809016994374948,0.587785252292473,0.309016994374947,6.12323399573677e-17,-0.309016994374948,-0.587785252292473,-0.809016994374947,-0.951056516295154,-1,-0.951056516295154,-0.809016994374947,-0.587785252292473,-0.309016994374948,-1.83697019872103e-16,0.309016994374947,0.587785252292474,0.809016994374948,0.951056516295154,1,0.951056516295153,0.809016994374948,0.587785252292473,0.309016994374947,-5.82016719913287e-16,-0.309016994374949,-0.587785252292473,-0.809016994374947,-0.951056516295153,-1,-0.951056516295154,-0.809016994374948,-0.587785252292472,-0.309016994374946,1.34773045969868e-15,0.309016994374949,0.587785252292473,0.809016994374947,0.951056516295153,1,0.951056516295153,0.809016994374947,0.587785252292472,0.309016994374948,5.51091059616309e-16,-0.309016994374947,-0.587785252292473,-0.809016994374948,-0.951056516295154,-1,-0.951056516295153,-0.809016994374946,-0.587785252292472,-0.309016994374948,1.10280109986921e-15,0.309016994374947,0.587785252292474,0.809016994374947,0.951056516295154,1,0.951056516295153,0.809016994374948,0.587785252292472};
-	
-	int N = sizeof(sig)/sizeof(sig[0]);
+	float complex *sig = read_img();
 
-	int result = fft(&sig[0], N);
+	int N = 64;
+
+	printf("fft start");
+
+	int result = fft(sig, N);
+
+	printf("fft done");
+
+	result = ift(sig, N);
+
+	printf("ifft");
 
 	for(int i=0; i<N; i++) {
 		printf("%.4f%+.4fi\n", crealf(sig[i]), cimagf(sig[i]));
@@ -191,6 +183,50 @@ static void sevenseg_cmd(void)
     busy_wait(500);
   }
   seven_out_write(0xFF);
+}
+
+static float complex * read_img(void)
+{	
+	static const int N = 64;
+	static const int M = 64;
+
+	static float complex img[64][64];
+
+	int i,j = 0;
+	char byte;
+
+	// Waits for the img to be sent
+	do{
+		if(readchar_nonblock()){
+			byte = getchar();
+			printf("%c", byte);
+		}
+
+	}while(byte!='#');
+	printf("Got init flag\n");
+
+	byte=0;
+	// Reads img
+	printf("Reading img\n");
+	while(byte!='#'){
+		if(readchar_nonblock()) {
+			byte = getchar();
+
+			printf("%c", byte);
+
+			if(i==N && j==M){
+				break;
+			}else if(j==M){
+				j = 0;
+				i++;
+			}
+
+			img[i][j++] = byte;
+		}
+	}
+
+	printf("Done\n");
+	return img[0];
 }
 
 #ifdef WITH_CXX
@@ -225,10 +261,6 @@ static void console_service(void)
 	else if(strcmp(token, "led") == 0)
 		led_cmd();
 #endif
-	//else if(strcmp(token, "donut") == 0)
-	//	donut_cmd();
-	else if(strcmp(token, "helloc") == 0)
-		helloc_cmd();
 #ifdef WITH_CXX
 	else if(strcmp(token, "hellocpp") == 0)
 		hellocpp_cmd();
@@ -236,8 +268,8 @@ static void console_service(void)
 	else if(strcmp(token, "gpioc") == 0)
 		gpioc_cmd();
 	
-	else if(strcmp(token, "7seg") == 0)
-		sevenseg_cmd();
+	else if(strcmp(token, "[") == 0)
+		read_img();
 	prompt();	
 }
 
