@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #include <irq.h>
 #include <libbase/uart.h>
 #include <libbase/console.h>
@@ -143,20 +144,32 @@ static void led_cmd(void)
 
 static void fft_cmd(void)
 {
-	printf("Start fft");
+	printf("Start fft\n");
 	float complex *sig = read_img();
 
 	int N = 64;
+	int M = 64;
 
-	printf("fft start");
+	printf("fft start\n");
 
-	int result = fft(sig, N);
+	int result;
 
-	printf("fft done");
+	for(int i=0; i<N; i++) {
+		result = fft(sig, N);
+		sig = sig + i*M;
+	}
+
+	printf("#### fft done ####\n");
+
+	for(int i=0; i<N; i++) {
+		for(int j=0; j<M; j++) {
+			printf("%f%+fi\n", crealf(sig[i*M + j]), cimagf(sig[i*M + j]));
+		}
+	}
 
 	result = ift(sig, N);
 
-	printf("ifft");
+	printf("#### ifft ####\n");
 
 	for(int i=0; i<N; i++) {
 		printf("%.4f%+.4fi\n", crealf(sig[i]), cimagf(sig[i]));
@@ -194,16 +207,17 @@ static float complex * read_img(void)
 	static float complex img[64][64];
 
 	int i,j = 0;
-	char byte;
+	int byte;
 
 	// Waits for the img to be sent
 	do{
 		if(readchar_nonblock()){
+
 			byte = getchar();
-			printf("%c", byte);
 		}
 
 	}while(byte!='#');
+
 	printf("Got init flag\n");
 
 	byte=0;
@@ -213,8 +227,6 @@ static float complex * read_img(void)
 		if(readchar_nonblock()) {
 			byte = getchar();
 
-			printf("%c", byte);
-
 			if(i==N && j==M){
 				break;
 			}else if(j==M){
@@ -223,6 +235,8 @@ static float complex * read_img(void)
 			}
 
 			img[i][j++] = byte;
+
+			printf("%d\n", byte);
 		}
 	}
 
