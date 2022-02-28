@@ -143,6 +143,7 @@ static void led_cmd(void)
 
 static void fft_cmd(void)
 {
+	printf("Start fft");
 	float complex *sig = read_img();
 
 	int N = 64;
@@ -268,7 +269,7 @@ static void console_service(void)
 	else if(strcmp(token, "gpioc") == 0)
 		gpioc_cmd();
 	
-	else if(strcmp(token, "[") == 0)
+	else if(strcmp(token, "read") == 0)
 		read_img();
 	prompt();	
 }
