@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #include <irq.h>
 #include <libbase/uart.h>
 #include <libbase/console.h>
@@ -142,37 +141,136 @@ static void led_cmd(void)
 }
 #endif
 
+void transpose(float complex * matrix, size_t N){
+	return;
+}
+
 static void fft_cmd(void)
 {
 	printf("Start fft\n");
 	float complex *sig = read_img();
+	float complex *sig_temp;
+	char *ptr_iterator = (char *) sig;
 
 	int N = 64;
 	int M = 64;
 
+	float complex img_trans[64][64];
+	float complex *trans_sig = img_trans[0];
+	float complex *trans_sig_temp;
+	char *ptr_trans_iterator;
+		
 	printf("fft start\n");
 
 	int result;
 
 	for(int i=0; i<N; i++) {
+		sig_temp = (float complex *) ptr_iterator;
 		result = fft(sig, N);
-		sig = sig + i*M;
+		printf("result: %d", result);
+		ptr_iterator += M*sizeof(float complex);
+		printf("#");
 	}
+
+	printf("\n");
+
+	printf("first fft done\n"); 
+	
+	int elem_trans = 0;
+	int elem_sig = 0;
+
+	char * first_addr_sig = (char *) sig;
+	char * last_addr_sig = first_addr_sig + N*M*sizeof(float complex);
+
+	char * first_addr_trans = (char *) trans_sig;
+	char * last_addr_trans = first_addr_trans + N*M*sizeof(float complex);
+
+	for(ptr_iterator = first_addr_sig; ptr_iterator < last_addr_sig; ) {
+		sig_temp = (float complex *) ptr_iterator;
+
+		ptr_trans_iterator = first_addr_trans;
+		
+		for(elem_sig = 0; elem_sig < N; elem_sig++ ){
+			trans_sig_temp = (float complex *) ptr_trans_iterator;
+
+			trans_sig_temp[elem_trans] = sig_temp[elem_sig];
+			ptr_trans_iterator += M*sizeof(float complex);
+		}
+
+		elem_trans++;
+		ptr_iterator += M*sizeof(float complex);
+		printf("#");
+	}
+
+	printf("\n");
+
+	printf("transpose done\n"); 
+
+	for(int i=0; i<2*M; i++) {
+		if(i%M == 0){
+			printf("####\n");
+		}
+		printf("%f%+fi\n", crealf(trans_sig[i]), cimagf(trans_sig[i]));
+	}
+
+	ptr_iterator = (char *) trans_sig;
+
+	for(int i=0; i<N; i++) {
+		sig_temp = (float complex *) ptr_iterator;
+		result = fft(sig_temp, N);
+		printf("result: %d", result);
+		ptr_iterator += M*sizeof(float complex);
+		printf("#");
+	}
+
+	printf("\n");
+
+	printf("second fft done\n"); 
+
+	first_addr_sig = (char *) sig;
+	last_addr_sig = first_addr_sig + N*M*sizeof(float complex);
+
+	first_addr_trans = (char *) trans_sig;
+	last_addr_trans = first_addr_trans + N*M*sizeof(float complex);
+
+	for(ptr_trans_iterator = first_addr_trans; ptr_trans_iterator < last_addr_trans; ) {
+		trans_sig_temp = (float complex *) ptr_trans_iterator;
+
+		ptr_iterator = first_addr_sig;
+		
+		for(elem_trans = 0; elem_trans < N; elem_trans++ ){
+			sig_temp = (float complex *) ptr_iterator;
+
+			sig_temp[elem_sig] = trans_sig_temp[elem_trans];
+			ptr_iterator += M*sizeof(float complex);
+		}
+
+		elem_sig++;
+		ptr_trans_iterator += M*sizeof(float complex);
+		printf("#");
+	}
+
+	printf("\n");
+	printf("transpose done\n");
 
 	printf("#### fft done ####\n");
 
-	for(int i=0; i<N; i++) {
-		for(int j=0; j<M; j++) {
-			printf("%f%+fi\n", crealf(sig[i*M + j]), cimagf(sig[i*M + j]));
+	/*
+	for(int i=0; i<N*M; i++) {
+		if(i%M == 0){
+			printf("####\n");
 		}
-	}
+		printf("%f%+fi\n", crealf(sig[i]), cimagf(sig[i]));
+	}*/
 
-	result = ift(sig, N);
-
+	
 	printf("#### ifft ####\n");
 
-	for(int i=0; i<N; i++) {
-		printf("%.4f%+.4fi\n", crealf(sig[i]), cimagf(sig[i]));
+	for(int i=0; i<2*M; i++) {
+		if(i%M == 0){
+			printf("####\n");
+		}
+		printf("%f%+fi\n", crealf(sig[i]), cimagf(sig[i]));
 	}
 }
 

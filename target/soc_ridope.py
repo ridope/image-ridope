@@ -15,6 +15,7 @@ from litex.soc.cores.led import LedChaser
 from litex_boards.platforms.muselab_icesugar import led_pmod_io_v11
 
 from migen import *
+from migen.genlib.cdc import MultiReg
 from migen.genlib.resetsync import AsyncResetSynchronizer
 
 from litex_boards.platforms import de10lite # referencing the platform
@@ -85,6 +86,10 @@ class BaseSoC(SoCCore): # SoC definition - memory sizes are overloaded
         # 7SEGMENT ------------------------------------------------------------------------------------
         seg =  platform.request("seven_seg")
         self.submodules.seven = LedChaser(seg, sys_clk_freq)
+
+        #Reset
+        #btn0_press = UserButtonPress(platform.request("user_btn"))
+        #self.submodules += btn0_press
         
 
 
