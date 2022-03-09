@@ -5,8 +5,10 @@ include $(SOC_DIRECTORY)/software/common.mak
 
 DEPFLAGS+=-DPICOLIBC_FLOAT_PRINTF_SCANF
 
+OBJDIR = ./obj
+LIBDIR = ./lib/ufft
+OBJECTS   = $(OBJDIR)/ift-dif.o $(OBJDIR)/fft-dif.o $(OBJDIR)/isr.o $(OBJDIR)/main.o $(OBJDIR)/crt0.o 
 
-OBJECTS   = ift-dif.o fft-dif.o isr.o main.o crt0.o 
 ifdef WITH_CXX
 	OBJECTS += hellocpp.o
 endif
@@ -30,23 +32,22 @@ demo.elf: $(OBJECTS)
 		-lgcc
 	chmod -x $@
 
-main.o: main.c
+$(OBJDIR)/main.o: main.c
 	$(compile)
 
-crt0.o: $(CPU_DIRECTORY)/crt0.S
+$(OBJDIR)/crt0.o: $(CPU_DIRECTORY)/crt0.S
 	$(assemble)
 
-helloc.o: CFLAGS += -w
-
-hellocpp.o: CXXFLAGS += -w
-
-%.o: %.cpp
+$(OBJDIR)/%.o: %.cpp
 	$(compilexx)
 
-%.o: %.c
+$(OBJDIR)/%.o: %.c
 	$(compile)
 
-%.o: %.S
+$(OBJDIR)/%.o: $(LIBDIR)/%.c
+	$(compile)
+
+$(OBJDIR)/%.o: %.S
 	$(assemble)
 
 clean:
