@@ -63,6 +63,7 @@ float complex * read_img(void)
 
 	int i,j = 0;
 	int byte;
+	uint8_t
 
 	// Waits for the img to be sent
 	do{
@@ -106,7 +107,7 @@ int main(void)
 		irq_setie(1);
 	#endif
 
-	uart_init();
+	
 
 	while(1) {
 		

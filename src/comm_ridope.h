@@ -1,0 +1,50 @@
+#ifndef COMM_RIDOPE_H
+#define COMM_RIDOPE_H
+
+#include <stdint.h>
+
+#include "uart.h"
+#include "complex.h"
+
+/**
+ * @brief Enum with the allowed commands in the RIDOPE project UART comunication 
+ * 
+ */
+typedef enum CMD_TYPE
+{
+    REBOOT = 0,
+    TRANS_PHOTO,
+    TRANS_FFT,
+    TRANS_IFFT,
+    PHOTO_SIZE,
+    START_TRANS,
+    STOP_TRANS,
+    NULL_CMD,
+}CMD_TYPE_t;
+
+/**
+ * @brief Struct with the message format of the RIDOPE project UART comunication
+ *  
+ */
+typedef struct COMM_RIDOPE_CMD_TYPE
+{
+    CMD_TYPE_t cmd;
+    float complex data;
+} COMM_RIDOPE_CMD_TYPE_t;
+
+/**
+ * @brief Union with the message and the byte buffer ready to be sent
+ * 
+ */
+typedef union
+{
+    COMM_RIDOPE_CMD_TYPE_t cmd_send;
+    char buffer[sizeof(COMM_RIDOPE_CMD_TYPE_t)];
+
+} COMM_RIDOPE_MSG_t;
+
+void comm_ridope_init(void);
+void comm_ridope_receive_cmd(COMM_RIDOPE_MSG_t *msg);
+void comm_ridope_send_cmd(COMM_RIDOPE_MSG_t *msg);
+
+#endif
