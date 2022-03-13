@@ -2,8 +2,13 @@
 #define COMM_RIDOPE_H
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
 
-#include "uart.h"
+#include <generated/csr.h>
+#include <libbase/uart.h>
+#include <libbase/console.h>
+
 #include "complex.h"
 
 /**
@@ -12,7 +17,7 @@
  */
 typedef enum CMD_TYPE
 {
-    REBOOT = 0,
+    REBOOT = 1,
     TRANS_PHOTO,
     TRANS_FFT,
     TRANS_IFFT,
@@ -38,12 +43,14 @@ typedef struct COMM_RIDOPE_CMD_TYPE
  */
 typedef union
 {
-    COMM_RIDOPE_CMD_TYPE_t cmd_send;
+    COMM_RIDOPE_CMD_TYPE_t msg_data;
     char buffer[sizeof(COMM_RIDOPE_CMD_TYPE_t)];
 
 } COMM_RIDOPE_MSG_t;
 
 void comm_ridope_init(void);
+float complex* comm_ridope_receive_img(uint32_t *N, uint32_t *M);
+void comm_ridope_send_img(float complex* img, CMD_TYPE_t img_type, uint32_t N, uint32_t M);
 void comm_ridope_receive_cmd(COMM_RIDOPE_MSG_t *msg);
 void comm_ridope_send_cmd(COMM_RIDOPE_MSG_t *msg);
 

@@ -11,9 +11,8 @@
 #include <generated/csr.h>
 
 #include "complex.h"
+#include "comm_ridope.h"
 #include "fft2d.h"
-
-float complex* read_img(void);
 
 
 #endif

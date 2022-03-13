@@ -7,7 +7,7 @@ DEPFLAGS+=-DPICOLIBC_FLOAT_PRINTF_SCANF
 
 OBJDIR = ./obj
 LIBDIR = ./lib/ufft
-OBJECTS   = $(OBJDIR)/comm_ridope.o $(OBJDIR)/ift-dif.o $(OBJDIR)/fft-dif.o $(OBJDIR)/isr.o $(OBJDIR)/main.o $(OBJDIR)/crt0.o 
+OBJECTS   = $(OBJDIR)/comm_ridope.o $(OBJDIR)/fft2d.o $(OBJDIR)/ift-dif.o $(OBJDIR)/fft-dif.o $(OBJDIR)/isr.o $(OBJDIR)/main.o $(OBJDIR)/crt0.o 
 
 ifdef WITH_CXX
 	OBJECTS += hellocpp.o
