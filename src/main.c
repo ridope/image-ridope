@@ -6,7 +6,6 @@
 /*-----------------------------------------------------------------------*/
 /* Commands                                                              */
 /*-----------------------------------------------------------------------*/
-
 static void reboot_cmd(void)
 {
 	ctrl_reset_write(1);
@@ -147,14 +146,8 @@ int main(void)
 		printf("#### fft 2D done ####\n");
 
 		comm_ridope_send_img(sig, TRANS_FFT, N, M);
-		
-/* 		for(int i=0; i<N*M; i++) {
-			if(i%M == 0){
-				printf("####\n");
-			}
-			printf("%f%+fi\n", crealf(sig[i]), cimagf(sig[i]));
-		} */
-		
+				
+		free(sig);
 	}
 
 	return 0;

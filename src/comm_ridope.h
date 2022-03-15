@@ -2,12 +2,14 @@
 #define COMM_RIDOPE_H
 
 #include <stdint.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <generated/csr.h>
+#include <irq.h>
 #include <libbase/uart.h>
 #include <libbase/console.h>
+#include <generated/csr.h>
 
 #include "complex.h"
 

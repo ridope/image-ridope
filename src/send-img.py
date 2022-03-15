@@ -11,6 +11,7 @@ import threading, queue
 import time
 from struct import *
 from enum import Enum
+import matplotlib.pyplot as plt
 
 cmd = Enum('CMD_TYPE', 'REBOOT TRANS_PHOTO TRANS_FFT TRANS_IFFT PHOTO_SIZE START_TRANS STOP_TRANS NULL_CMD', start=1)
 tx_buffer = queue.Queue()
@@ -33,17 +34,63 @@ def rx():
 
             try:
                 item_temp = unpack("<cIffc", item)
-            except:
-                item_temp = item.decode()
 
-            if(item_temp[1] == cmd.TRANS_FFT.value):
-                complex_number = complex(item[2], item[3])
-                rx_buffer.put(complex_number)
-                rx_buffer.task_done()
-            else:
+                if(item_temp[1] >= cmd.REBOOT.value and item_temp[1] <= cmd.NULL_CMD.value):
+                    rx_buffer.put(item_temp)
+                else:
+                    item = item.decode()
+                    print(item)
+
+            except:
                 item = item.decode()
                 print(item)
             
+def save_img():
+    N = 0
+    M = 0
+    cont = 0
+    img_array = np.zeros(N*M, dtype=float)
+
+    while True:
+        item = rx_buffer.get()
+        rx_buffer.task_done() 
+
+        if(item[1] == cmd.PHOTO_SIZE.value):
+            N = item[2]
+            M = item[3]
+            print("pyGot size!")
+ 
+        elif(item[1] == cmd.START_TRANS.value):
+            print("pyGot start flag!")
+            flag = item[1]
+
+            while flag != cmd.STOP_TRANS:
+                item = rx_buffer.get()
+                rx_buffer.task_done() 
+
+                flag = item[1]
+
+                if(flag == cmd.TRANS_FFT):
+                    pixel = abs(complex(item[2], item[3]))
+
+                    if(cont == N*M):
+                        print("pyGot in the end!")
+                        break
+
+                    img_array[cont] = pixel
+                    cont += 1
+            N=0
+            M=0
+            cont = 0
+            img_array = np.zeros(N*M, dtype=float)
+
+            print("pyGot stop flag!")
+            im = Image.fromarray(np.reshape(img_array, (N,M)), mode="F")
+            im.save("../img/fft-cameraman.png")
+            plt.imshow(im)
+            plt.show()
+
+                 
 
 def send_img():
     # Opening image
@@ -72,6 +119,7 @@ def send_reboot():
 # turn-on the tx thread
 threading.Thread(target=tx, daemon=True).start()
 threading.Thread(target=rx, daemon=True).start()
+threading.Thread(target=save_img, daemon=True).start()
 
 try:
     print("Available commands: ")

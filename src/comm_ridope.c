@@ -93,23 +93,25 @@ void comm_ridope_send_img(float complex* img, CMD_TYPE_t img_type,uint32_t N, ui
 {
     COMM_RIDOPE_MSG_t msg;
 
-    msg.msg_data.cmd = img_type;
-    msg.msg_data.data = 10+0I;
+    msg.msg_data.cmd = PHOTO_SIZE;
+    msg.msg_data.data = N+ M*I;
 
     comm_ridope_send_cmd(&msg);
-       /*  data_send = pack("<iff", cmd.PHOTO_SIZE.value, arr_img.shape[0], arr_img.shape[1])
-        tx_buffer.put(data_send)
 
-        data_send = pack("<iff", cmd.START_TRANS.value, 0, 0)
-        tx_buffer.put(data_send)
+    msg.msg_data.cmd = START_TRANS;
 
-        for elem in np.nditer(arr_img,order="C"):
-            data_send = pack("<iff", cmd.TRANS_PHOTO.value, elem,0)
-            tx_buffer.put(data_send)
-            time.sleep(0.005)
+    comm_ridope_send_cmd(&msg);
 
-        data_send = pack("<iff", cmd.STOP_TRANS.value, 0, 0)
-        tx_buffer.put(data_send) */
+    for(int i=0; i<N*M; i++) {
+        msg.msg_data.cmd = img_type;
+        msg.msg_data.data = img[i];
+
+        comm_ridope_send_cmd(&msg);
+    }
+
+     msg.msg_data.cmd = STOP_TRANS;
+
+    comm_ridope_send_cmd(&msg);
 }
 
 /**
@@ -155,8 +157,6 @@ void comm_ridope_send_cmd(COMM_RIDOPE_MSG_t *msg)
     }
 
     uint8_t buff_len = sizeof(COMM_RIDOPE_MSG_t);
-
-    printf("buff_len: %d\n", buff_len);
 
     for(int i = 0; i < buff_len; i++)
     {
