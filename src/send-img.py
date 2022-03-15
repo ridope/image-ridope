@@ -33,8 +33,9 @@ def rx():
             item = uart.read_until()
 
             try:
+                print(item)
                 item_temp = unpack("<cIffc", item)
-
+    
                 if(item_temp[1] >= cmd.REBOOT.value and item_temp[1] <= cmd.NULL_CMD.value):
                     rx_buffer.put(item_temp)
                 else:
@@ -49,28 +50,29 @@ def save_img():
     N = 0
     M = 0
     cont = 0
-    img_array = np.zeros(N*M, dtype=float)
+    img_array = []
 
     while True:
         item = rx_buffer.get()
         rx_buffer.task_done() 
 
         if(item[1] == cmd.PHOTO_SIZE.value):
-            N = item[2]
-            M = item[3]
+            N = int(item[2])
+            M = int(item[3])
             print("pyGot size!")
+            img_array = np.zeros(N*M, dtype=float)
  
         elif(item[1] == cmd.START_TRANS.value):
             print("pyGot start flag!")
             flag = item[1]
 
-            while flag != cmd.STOP_TRANS:
+            while flag != cmd.STOP_TRANS.value:
                 item = rx_buffer.get()
                 rx_buffer.task_done() 
 
                 flag = item[1]
 
-                if(flag == cmd.TRANS_FFT):
+                if(flag == cmd.TRANS_FFT.value):
                     pixel = abs(complex(item[2], item[3]))
 
                     if(cont == N*M):
@@ -79,16 +81,18 @@ def save_img():
 
                     img_array[cont] = pixel
                     cont += 1
-            N=0
-            M=0
-            cont = 0
-            img_array = np.zeros(N*M, dtype=float)
 
             print("pyGot stop flag!")
             im = Image.fromarray(np.reshape(img_array, (N,M)), mode="F")
+            im = im.convert("L")
             im.save("../img/fft-cameraman.png")
             plt.imshow(im)
             plt.show()
+
+            N=0
+            M=0
+            cont = 0
+            img_array = []
 
                  
 

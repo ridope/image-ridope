@@ -105,7 +105,7 @@ void comm_ridope_send_img(float complex* img, CMD_TYPE_t img_type,uint32_t N, ui
     for(int i=0; i<N*M; i++) {
         msg.msg_data.cmd = img_type;
         msg.msg_data.data = img[i];
-
+        
         comm_ridope_send_cmd(&msg);
     }
 
@@ -164,5 +164,6 @@ void comm_ridope_send_cmd(COMM_RIDOPE_MSG_t *msg)
     }
 
     uart_write('\n');
+    uart_write('\r');
 }
 
