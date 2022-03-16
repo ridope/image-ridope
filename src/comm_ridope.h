@@ -19,7 +19,7 @@
  */
 typedef enum CMD_TYPE
 {
-    REBOOT = 1,
+    REBOOT = 48,
     TRANS_PHOTO,
     TRANS_FFT,
     TRANS_IFFT,

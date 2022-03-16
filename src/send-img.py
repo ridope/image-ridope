@@ -13,7 +13,7 @@ from struct import *
 from enum import Enum
 import matplotlib.pyplot as plt
 
-cmd = Enum('CMD_TYPE', 'REBOOT TRANS_PHOTO TRANS_FFT TRANS_IFFT PHOTO_SIZE START_TRANS STOP_TRANS NULL_CMD', start=1)
+cmd = Enum('CMD_TYPE', 'REBOOT TRANS_PHOTO TRANS_FFT TRANS_IFFT PHOTO_SIZE START_TRANS STOP_TRANS NULL_CMD', start=48)
 tx_buffer = queue.Queue()
 rx_buffer = queue.Queue()
 uart = serial.Serial("/dev/ttyUSB0", 115200)
@@ -32,19 +32,20 @@ def rx():
         if uart.in_waiting != 0:
             item = uart.read_until()
 
-            try:
-                print(item)
-                item_temp = unpack("<cIffc", item)
-    
-                if(item_temp[1] >= cmd.REBOOT.value and item_temp[1] <= cmd.NULL_CMD.value):
+            if(len(item) > 2):
+
+                if(item[1] >= cmd.REBOOT.value and item[1] <= cmd.NULL_CMD.value):
+                    format = "<cIffc"
+
+                    if(len(item) < calcsize(format)):
+                        item += uart.read_until()
+
+                    item_temp = unpack("<cIffc", item)
                     rx_buffer.put(item_temp)
+
                 else:
                     item = item.decode()
                     print(item)
-
-            except:
-                item = item.decode()
-                print(item)
             
 def save_img():
     N = 0
@@ -75,15 +76,15 @@ def save_img():
                 if(flag == cmd.TRANS_FFT.value):
                     pixel = abs(complex(item[2], item[3]))
 
-                    if(cont == N*M):
-                        print("pyGot in the end!")
-                        break
-
                     img_array[cont] = pixel
                     cont += 1
 
+                    if(cont+1 == N*M):
+                        print("pyGot in the end!")
+                        break
+
             print("pyGot stop flag!")
-            im = Image.fromarray(np.reshape(img_array, (N,M)), mode="F")
+            im = Image.fromarray(np.reshape(img_array, (N,M)), mode="L")
             im = im.convert("L")
             im.save("../img/fft-cameraman.png")
             plt.imshow(im)
@@ -98,7 +99,7 @@ def save_img():
 
 def send_img():
     # Opening image
-    with Image.open("../img/cameraman.png") as im:
+    with Image.open("../img/cameraman.png").convert('L') as im:
         arr_img = np.array(im, dtype="<u1")
         print(arr_img.shape)
     
