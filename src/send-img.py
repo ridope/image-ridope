@@ -1,5 +1,4 @@
-#!/usr/bin/python3
-
+#!/usr/bin/env python3
 import serial
 import os
 import sys
@@ -37,7 +36,7 @@ def rx():
                 if(item[1] >= cmd.REBOOT.value and item[1] <= cmd.NULL_CMD.value):
                     format = "<cIffc"
 
-                    if(len(item) < calcsize(format)):
+                    while(len(item) < calcsize(format)):
                         item += uart.read_until()
 
                     item_temp = unpack("<cIffc", item)
@@ -84,9 +83,9 @@ def save_img():
                         break
 
             print("pyGot stop flag!")
-            im = Image.fromarray(np.reshape(img_array, (N,M)), mode="L")
+            im = Image.fromarray(np.fft.fftshift(np.reshape(img_array, (N,M))), mode="F")
             im = im.convert("L")
-            im.save("../img/fft-cameraman.png")
+            im.save("../img/fft-image_NB32.png")
             plt.imshow(im)
             plt.show()
 
@@ -99,7 +98,7 @@ def save_img():
 
 def send_img():
     # Opening image
-    with Image.open("../img/cameraman.png").convert('L') as im:
+    with Image.open("../img/image_NB32.bmp").convert('L') as im:
         arr_img = np.array(im, dtype="<u1")
         print(arr_img.shape)
     
