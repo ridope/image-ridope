@@ -58,6 +58,9 @@ On Prototyping image processing on RISC-V SoCs
   
 # Usage
 
+ - Attention: 
+ 	- If you can only access the USB port with root access, you need to use sudo for the following commands and configure the PATH for the tools, such as Quartus, in the 		/etc/sudoers file in the secure_path flag. Otherwise, you can use the following commands without sudo.
+ 
  - Build and load the SOC
    - Go to the target directory
   
