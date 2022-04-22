@@ -40,8 +40,27 @@ On Prototyping image processing on RISC-V SoCs
   DEPFLAGS+=-DPICOLIBC_FLOAT_PRINTF_SCANF
   ```
   
+  Also, go into your litex installation folder, and change the following Makefile in line 46: \litex\litex\soc\software\libc\Makefile. Change the flag `-Dformat-default` to double.
+  
+  ```
+  	meson $(PICOLIBC_DIRECTORY) \
+		-Dmultilib=false \
+		-Dpicocrt=false \
+		-Datomic-ungetc=false \
+		-Dthread-local-storage=false \
+		-Dio-long-long=true \
+		-Dformat-default=double \
+		-Dincludedir=picolibc/$(TRIPLE)/include \
+		-Dlibdir=picolibc/$(TRIPLE)/lib \
+		--cross-file cross.txt
+  ```
+  
+  
 # Usage
 
+ - Attention: 
+ 	- If you can only access the USB port with root access, you need to use sudo for the following commands and configure the PATH for the tools, such as Quartus, in the 		/etc/sudoers file in the secure_path flag. Otherwise, you can use the following commands without sudo.
+ 
  - Build and load the SOC
    - Go to the target directory
   
