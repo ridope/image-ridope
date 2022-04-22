@@ -26,7 +26,8 @@ typedef enum CMD_TYPE
     PHOTO_SIZE,
     START_TRANS,
     STOP_TRANS,
-    NULL_CMD,
+    OP_TIME,
+    NULL_CMD
 }CMD_TYPE_t;
 
 /**

@@ -11,111 +11,10 @@ static void reboot_cmd(void)
 	ctrl_reset_write(1);
 }
 
-/*-----------------------------------------------------------------------*/
-/* Uart                                                                  */
-/*-----------------------------------------------------------------------*/
-
-static char *readstr(void)
-{
-	char c[2];
-	static char s[64];
-	static int ptr = 0;
-
-	if(readchar_nonblock()) {
-		c[0] = getchar();
-		c[1] = 0;
-		switch(c[0]) {
-			case 0x7f:
-			case 0x08:
-				if(ptr > 0) {
-					ptr--;
-					fputs("\x08 \x08", stdout);
-				}
-				break;
-			case 0x07:
-				break;
-			case '\r':
-			case '\n':
-				s[ptr] = 0x00;
-				fputs("\n", stdout);
-				ptr = 0;
-				return s;
-			default:
-				if(ptr >= (sizeof(s) - 1))
-					break;
-				fputs(c, stdout);
-				s[ptr] = c[0];
-				ptr++;
-				break;
-		}
-	}
-
-	return NULL;
-}
-
-static char *get_token(char **str)
-{
-	char *c, *d;
-
-	c = (char *)strchr(*str, ' ');
-	if(c == NULL) {
-		d = *str;
-		*str = *str+strlen(*str);
-		return d;
-	}
-	*c = 0;
-	d = *str;
-	*str = c+1;
-	return d;
-}
-
 static void prompt(void)
 {
 	printf("\e[92;1mlitex-demo-app\e[0m> ");
 }
-
-/*-----------------------------------------------------------------------*/
-/* Help                                                                  */
-/*-----------------------------------------------------------------------*/
-
-static void help(void)
-{
-	puts("\nLiteX minimal demo app built "__DATE__" "__TIME__"\n");
-	puts("Available commands:");
-	puts("help               - Show this command");
-	puts("reboot             - Reboot CPU");
-#ifdef CSR_LEDS_BASE
-	puts("led                - Led demo");
-#endif
-	puts("7seg             	 - Seven Segments");
-	puts("fft 				- FFT");
-#ifdef WITH_CXX
-	puts("hellocpp           - Hello C++");
-#endif
-}
-
-
-/*-----------------------------------------------------------------------*/
-/* Console service / Main                                                */
-/*-----------------------------------------------------------------------*/
-
-static void console_service(void)
-{
-	char *str;
-	char *token;
-
-	str = readstr();
-	if(str == NULL) return;
-	token = get_token(&str);
-	if(strcmp(token, "help") == 0)
-		help();
-	else if(strcmp(token, "reboot") == 0)
-		reboot_cmd();
-
-	prompt();	
-}
-
-
 
 int main(void)
 {
@@ -135,18 +34,40 @@ int main(void)
 
 		printf("fft 2D start\n");
 
+		// Change this to a function millis_ridope
+		timer0_en_write(0);
+		timer0_load_write(0);
+		timer0_reload_write(0xFFFFFFFF);
+		timer0_en_write(1);
+		timer0_update_value_write(1);
+
+		timer0_update_value_write(1);
+		uint32_t time_begin = timer0_value_read();
+
 		uint8_t status = fft2d(sig, &N, &M);
+
+		timer0_update_value_write(1);
+		uint32_t time_end = timer0_value_read();
+
+		float time_spent_ms = (time_begin - time_end)/(CONFIG_CLOCK_FREQUENCY/1000.0);
 
 		if(status == -1)
 		{
 			printf("Error\n");
+			free(sig);
 			continue;
 		}
 
 		printf("#### fft 2D done ####\n");
 
+		COMM_RIDOPE_MSG_t msg;
+		msg.msg_data.cmd = OP_TIME;
+		msg.msg_data.data = time_spent_ms+0*I;
+
+		comm_ridope_send_cmd(&msg);
+
 		comm_ridope_send_img(sig, TRANS_FFT, N, M);
-				
+
 		free(sig);
 	}
 

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 import serial
-import os
+import os, fnmatch
 import sys
 import traceback
 import subprocess
 import numpy as np
+from scipy.io import savemat
 from PIL import Image
 import threading, queue
 import time
@@ -12,10 +13,13 @@ from struct import *
 from enum import Enum
 import matplotlib.pyplot as plt
 
-cmd = Enum('CMD_TYPE', 'REBOOT TRANS_PHOTO TRANS_FFT TRANS_IFFT PHOTO_SIZE START_TRANS STOP_TRANS NULL_CMD', start=48)
+cmd = Enum('CMD_TYPE', 'REBOOT TRANS_PHOTO TRANS_FFT TRANS_IFFT PHOTO_SIZE START_TRANS STOP_TRANS OP_TIME NULL_CMD', start=48)
 tx_buffer = queue.Queue()
 rx_buffer = queue.Queue()
 uart = serial.Serial("/dev/ttyUSB0", 115200)
+
+next_img = True
+image_name = ""
 
 tx_buffer.put("\n".encode())
 
@@ -35,11 +39,11 @@ def rx():
 
                 if(item[1] >= cmd.REBOOT.value and item[1] <= cmd.NULL_CMD.value):
                     format = "<cIffc"
-
+                        
                     while(len(item) < calcsize(format)):
                         item += uart.read_until()
 
-                    item_temp = unpack("<cIffc", item)
+                    item_temp = unpack(format, item)
                     rx_buffer.put(item_temp)
 
                 else:
@@ -47,8 +51,10 @@ def rx():
                     print(item)
             
 def save_img():
+    global image_name, next_img
     N = 0
     M = 0
+    time = 0
     cont = 0
     img_array = []
 
@@ -60,7 +66,11 @@ def save_img():
             N = int(item[2])
             M = int(item[3])
             print("pyGot size!")
-            img_array = np.zeros(N*M, dtype=float)
+            img_array = np.zeros(N*M, dtype=np.float32)
+        
+        elif(item[1] == cmd.OP_TIME.value):
+            time = item[2]
+            print("FFT time: ", time)
  
         elif(item[1] == cmd.START_TRANS.value):
             print("pyGot start flag!")
@@ -73,9 +83,10 @@ def save_img():
                 flag = item[1]
 
                 if(flag == cmd.TRANS_FFT.value):
-                    pixel = abs(complex(item[2], item[3]))
+                    #pixel = abs(complex(item[2], item[3]))
+                    pixel = complex(item[2], item[3])
 
-                    img_array[cont] = pixel
+                    img_array[cont] = abs(pixel)
                     cont += 1
 
                     if(cont+1 == N*M):
@@ -83,22 +94,31 @@ def save_img():
                         break
 
             print("pyGot stop flag!")
-            im = Image.fromarray(np.fft.fftshift(np.reshape(img_array, (N,M))), mode="F")
-            im = im.convert("L")
-            im.save("../img/fft-image_NB32.png")
-            plt.imshow(im)
-            plt.show()
+            im_array_reshaped = np.reshape(img_array, (N,M))
+
+            im_array_normalized = im_array_reshaped / im_array_reshaped.max() # normalize the data to 0 - 1
+            im_array_normalized = 255 * im_array_normalized # Now scale by 255
+            im_array_normalized = im_array_normalized.astype(np.uint8)
+
+            im = Image.fromarray(np.fft.fftshift(im_array_normalized), mode="L")
+            #fft_path = "../img/fft/fft-" + image_name
+            fft_path = "../img/fft/fft-image_NB32.png"
+            print(fft_path)
+            im.save(fft_path)
+            #plt.imshow(im)
+            #plt.show()
 
             N=0
             M=0
             cont = 0
             img_array = []
+            next_img = True
 
                  
 
-def send_img():
+def send_img(img_path):
     # Opening image
-    with Image.open("../img/image_NB32.bmp").convert('L') as im:
+    with Image.open(img_path).convert('L') as im:
         arr_img = np.array(im, dtype="<u1")
         print(arr_img.shape)
     
@@ -134,9 +154,22 @@ try:
         value = input("Please enter a string:  ")
 
         if(value=="send"):
-            send_img()
+#             for root, dir, files in os.walk("../img"):
+#                 for name in files:
+#                     while(next_img == False):
+#                         continue
+
+#                     if fnmatch.fnmatch(name, "image_*"):
+#                         image_path = root
+#                         image_name = name
+#                         next_image_path = os.path.join(root, name)
+
+#                         next_img = False
+            send_img("../img/image_64x64.png")
         elif(value=="reboot"):
-            send_reboot()
+            send_reboot()     
+
+
 
 except KeyboardInterrupt:
         traceback.print_exc(file=sys.stdout)
