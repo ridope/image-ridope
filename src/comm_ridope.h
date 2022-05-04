@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef COMM_RIDOPE_H
 #define COMM_RIDOPE_H
 
@@ -57,4 +61,8 @@ void comm_ridope_send_img(float complex* img, CMD_TYPE_t img_type, uint32_t N, u
 void comm_ridope_receive_cmd(COMM_RIDOPE_MSG_t *msg);
 void comm_ridope_send_cmd(COMM_RIDOPE_MSG_t *msg);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif

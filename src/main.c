@@ -6,6 +6,11 @@
 /*-----------------------------------------------------------------------*/
 /* Commands                                                              */
 /*-----------------------------------------------------------------------*/
+extern "C" {
+	static void reboot_cmd(void);
+	static void prompt(void);
+}
+	
 static void reboot_cmd(void)
 {
 	ctrl_reset_write(1);
@@ -26,49 +31,25 @@ int main(void)
 	comm_ridope_init();
 	prompt();
 
+
+	const tflite::Model* model = ::tflite::GetModel(cnn_mnist_tflite);
+
+	tflite::MicroMutableOpResolver<5> micro_op_resolver;
+  	micro_op_resolver.AddConv2D();
+  	micro_op_resolver.AddMaxPool2D();
+  	micro_op_resolver.AddReshape();
+	micro_op_resolver.AddFullyConnected();
+  	micro_op_resolver.AddSoftmax();
+
 	while(1) {
-		printf("Wait for img\n");
+		
+		
+		float a=1.0;
+		float b=1.5;
+		float c=1.0;
+		printf("%f\t%f\n", a, b);
+		
 
-		uint32_t N,M = 0;
-		float complex *sig = comm_ridope_receive_img(&N,&M);
-
-		printf("fft 2D start\n");
-
-		// Change this to a function millis_ridope
-		timer0_en_write(0);
-		timer0_load_write(0);
-		timer0_reload_write(0xFFFFFFFF);
-		timer0_en_write(1);
-		timer0_update_value_write(1);
-
-		timer0_update_value_write(1);
-		uint32_t time_begin = timer0_value_read();
-
-		uint8_t status = fft2d(sig, &N, &M);
-
-		timer0_update_value_write(1);
-		uint32_t time_end = timer0_value_read();
-
-		float time_spent_ms = (time_begin - time_end)/(CONFIG_CLOCK_FREQUENCY/1000.0);
-
-		if(status == -1)
-		{
-			printf("Error\n");
-			free(sig);
-			continue;
-		}
-
-		printf("#### fft 2D done ####\n");
-
-		COMM_RIDOPE_MSG_t msg;
-		msg.msg_data.cmd = OP_TIME;
-		msg.msg_data.data = time_spent_ms+0*I;
-
-		comm_ridope_send_cmd(&msg);
-
-		comm_ridope_send_img(sig, TRANS_FFT, N, M);
-
-		free(sig);
 	}
 
 	return 0;

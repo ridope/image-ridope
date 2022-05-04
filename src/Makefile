@@ -4,11 +4,14 @@ include $(BUILD_DIR)/software/include/generated/variables.mak
 include $(SOC_DIRECTORY)/software/common.mak
 
 DEPFLAGS+=-DPICOLIBC_FLOAT_PRINTF_SCANF
+INCLUDES += -I/home/lucas/tflite-micro/
+INCLUDES += -I/home/lucas/tflite-micro/tensorflow/lite/micro/tools/make/downloads/flatbuffers/include
+
 
 OBJDIR = ./obj
 TFT_MICRO_DIR = /home/lucas/tflite-micro/tensorflow/lite/micro/tools/make/gen/zephyr_vexriscv_x86_64_default/lib
-LIBDIR = ./lib/ufft
-OBJECTS = $(OBJDIR)/comm_ridope.o $(OBJDIR)/fft2d.o $(OBJDIR)/ift-dif.o $(OBJDIR)/fft-dif.o $(OBJDIR)/isr.o $(OBJDIR)/main.o $(OBJDIR)/crt0.o 
+#LIBDIR = ./lib/ufft
+OBJECTS = $(OBJDIR)/comm_ridope.o $(OBJDIR)/isr.o $(OBJDIR)/main.o $(OBJDIR)/crt0.o
 
 ifdef WITH_CXX
 	OBJECTS += hellocpp.o
@@ -31,7 +34,7 @@ demo.elf: $(OBJECTS)
 		$(PACKAGES:%=-L$(BUILD_DIR)/software/%) \
 		-L$(TFT_MICRO_DIR) \
 		$(LIBS:lib%=-l%) \
-		-ltensorflow-microlite \
+		-ltensorflow-microlite
 		-lgcc 
 	chmod -x $@
 
