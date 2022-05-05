@@ -56,7 +56,7 @@ typedef union
 } COMM_RIDOPE_MSG_t;
 
 void comm_ridope_init(void);
-float complex* comm_ridope_receive_img(uint32_t *N, uint32_t *M);
+float * comm_ridope_receive_img(uint32_t *N, uint32_t *M);
 void comm_ridope_send_img(float complex* img, CMD_TYPE_t img_type, uint32_t N, uint32_t M);
 void comm_ridope_receive_cmd(COMM_RIDOPE_MSG_t *msg);
 void comm_ridope_send_cmd(COMM_RIDOPE_MSG_t *msg);

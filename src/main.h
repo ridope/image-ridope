@@ -18,4 +18,13 @@
 #include "lib/cnn_ridope/max_pool_layer.h"
 #include "lib/cnn_ridope/dense_layer.h"
 
+#include "lib/cnn_ridope/data/layer_1_bias.h"
+#include "lib/cnn_ridope/data/layer_3_bias.h"
+#include "lib/cnn_ridope/data/layer_5_bias.h"
+
+#include "lib/cnn_ridope/data/layer_1_weights.h"
+#include "lib/cnn_ridope/data/layer_3_weights.h"
+#include "lib/cnn_ridope/data/layer_5_weights.h"
+
+
 #endif

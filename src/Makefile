@@ -10,6 +10,8 @@ OBJDIR = ./obj
 CNN_RIDOPE_DIR = ./lib/cnn_ridope
 LIBDIR = ./lib/ufft
 OBJECTS = $(OBJDIR)/comm_ridope.o $(OBJDIR)/isr.o $(OBJDIR)/main.o $(OBJDIR)/crt0.o $(OBJDIR)/activation_functions.o $(OBJDIR)/conv2d_layer.o $(OBJDIR)/dense_layer.o $(OBJDIR)/max_pool_layer.o $(OBJDIR)/utils.o
+OBJECTS += $(OBJDIR)/layer_1_bias.o $(OBJDIR)/layer_3_bias.o $(OBJDIR)/layer_5_bias.o
+OBJECTS += $(OBJDIR)/layer_1_weights.o $(OBJDIR)/layer_3_weights.o $(OBJDIR)/layer_5_weights.o
 
 ifdef WITH_CXX
 	OBJECTS += hellocpp.o
@@ -25,7 +27,7 @@ all: demo.bin
 	chmod -x $@
 
 demo.elf: $(OBJECTS)
-	$(CC) $(LDFLAGS) \
+	$(CX) $(LDFLAGS) \
 		-T linker.ld \
 		-N -o $@ \
 		$(OBJECTS) \
@@ -34,8 +36,8 @@ demo.elf: $(OBJECTS)
 		-lgcc 
 	chmod -x $@
 
-$(OBJDIR)/main.o: main.c
-	$(compile)
+$(OBJDIR)/main.o: main.cpp
+	$(compilexx)
 
 $(OBJDIR)/crt0.o: $(CPU_DIRECTORY)/crt0.S
 	$(assemble)
@@ -49,7 +51,10 @@ $(OBJDIR)/%.o: %.c
 $(OBJDIR)/%.o: $(LIBDIR)/%.c
 	$(compile)
 
-$(OBJDIR)/%.o: $(CNN_RIDOPE_DIR)/%.c
+$(OBJDIR)/%.o: $(CNN_RIDOPE_DIR)/%.cpp
+	$(compilexx)
+
+$(OBJDIR)/%.o: $(CNN_RIDOPE_DIR)/data/%.c
 	$(compile)
 
 $(OBJDIR)/%.o: %.S

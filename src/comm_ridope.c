@@ -16,7 +16,7 @@ void comm_ridope_init(void)
  * @param M         The number of columns
  * @return float*   Retruns the pointer of the Img
  */
-float complex* comm_ridope_receive_img(uint32_t *N, uint32_t *M){
+float * comm_ridope_receive_img(uint32_t *N, uint32_t *M){
     COMM_RIDOPE_MSG_t rx;
 
     // Gets Img size to be transfered
@@ -36,7 +36,7 @@ float complex* comm_ridope_receive_img(uint32_t *N, uint32_t *M){
     }while(rx.msg_data.cmd != PHOTO_SIZE);
 
     uint32_t img_pos = (*N)*(*M);
-    float complex* img = malloc(img_pos*sizeof(float complex));
+    float * img = malloc(img_pos*sizeof(float));
 
     printf("N: %d F: %d\n", *N, *M);
 
@@ -66,7 +66,7 @@ float complex* comm_ridope_receive_img(uint32_t *N, uint32_t *M){
 
         if(rx.msg_data.cmd == TRANS_PHOTO)
         {
-            img[counter++] = rx.msg_data.data;
+            img[counter++] = crealf(rx.msg_data.data);
         }
         else if(rx.msg_data.cmd == REBOOT)
         {
