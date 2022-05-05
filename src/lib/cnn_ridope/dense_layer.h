@@ -22,7 +22,7 @@ typedef struct DENSE_LAYER_TYPE
 }dense_layer_t;
 
 void init_dense_layer(dense_layer_t *layer, uint8_t units, activation_func  act_func, float * weights, float * bias, uint8_t input_rows, uint8_t input_cols, uint8_t input_channel);
-float * forward_propagation(dense_layer_t *layer, float *input_ptr);
+float * forward_propagation_dense(dense_layer_t *layer, float *input_ptr);
 
 #ifdef __cplusplus
 }

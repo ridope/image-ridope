@@ -2,7 +2,9 @@
 #define UTILS_RIDOPE_H
 
 #include "stdint.h"
+#include "math.h"
 #include "float.h"
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

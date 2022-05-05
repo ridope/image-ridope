@@ -6,10 +6,9 @@
 /*-----------------------------------------------------------------------*/
 /* Commands                                                              */
 /*-----------------------------------------------------------------------*/
-extern "C" {
-	static void reboot_cmd(void);
-	static void prompt(void);
-}
+static void reboot_cmd(void);
+static void prompt(void);
+
 	
 static void reboot_cmd(void)
 {
@@ -31,16 +30,6 @@ int main(void)
 	comm_ridope_init();
 	prompt();
 
-
-	const tflite::Model* model = ::tflite::GetModel(cnn_mnist_tflite);
-
-	tflite::MicroMutableOpResolver<5> micro_op_resolver;
-  	micro_op_resolver.AddConv2D();
-  	micro_op_resolver.AddMaxPool2D();
-  	micro_op_resolver.AddReshape();
-	micro_op_resolver.AddFullyConnected();
-  	micro_op_resolver.AddSoftmax();
-
 	while(1) {
 		
 		
@@ -51,6 +40,7 @@ int main(void)
 		
 
 	}
+
 
 	return 0;
 }

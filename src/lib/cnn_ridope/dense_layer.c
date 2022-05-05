@@ -1,15 +1,13 @@
 #include "dense_layer.h"
 #include "math.h"
 
-float * forward_propagation(dense_layer_t *layer, float *input_ptr)
+float * forward_propagation_dense(dense_layer_t *layer, float *input_ptr)
 {
     float *output_ptr = (float *)malloc(layer->input_rows * layer->units * sizeof(float));
     float *output_ptr_temp = output_ptr;
     float *kernel = (float *)malloc(layer->input_cols*sizeof(float));
     int cnt_weight = 0;
 	
-	float bias_tmp;
-
     for (int i = 0; i < layer->units; i++)
     {
         // reading corresponding weights to kernel pointer

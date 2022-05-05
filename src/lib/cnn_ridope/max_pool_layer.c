@@ -10,7 +10,7 @@ float * get_max_pool(max_pool_layer_t *layer, float *input_ptr)
     uint8_t cols_pad = layer->input_cols + 2 * layer->pad_size; // number of columns in padded image
 	uint8_t rows_pad = layer->input_rows + 2 * layer->pad_size;
 
-    int i, j, cnt, cnt_pad, cnt_pool, k1, k2, output_cnt;
+    int i, j, cnt_pad, k1, k2, output_cnt;
     float max_pool;
 
     output_cnt = 0;
@@ -24,13 +24,9 @@ float * get_max_pool(max_pool_layer_t *layer, float *input_ptr)
 
         max_pool = FLT_MIN;
 
-        for (i = layer->pad_size; i < rows_pad - layer->pad_size; i+layer->stride)
-        for (j = layer->pad_size; j < cols_pad - layer->pad_size; j+layer->stride)
+        for (i = layer->pad_size; i < rows_pad - layer->pad_size; i=i+layer->stride)
+        for (j = layer->pad_size; j < cols_pad - layer->pad_size; j=j+layer->stride)
         {
-            cnt = (i - layer->pad_size)*layer->input_cols + (j - layer->pad_size); // counter which shows current pixel in filtered image (central pixel in pool window)
-
-            cnt_pool = 0; // counter which determines pool elements
-
             for (k1 = -layer->pad_size; k1 <= layer->pad_size; k1++)
             for (k2 = -layer->pad_size; k2 <= layer->pad_size; k2++)
             {

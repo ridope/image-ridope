@@ -1,6 +1,6 @@
 #include "conv2d_layer.h"
 
-float * forward_propagation(conv2d_layer_t *layer, float *input_ptr)
+float * forward_propagation_conv2d(conv2d_layer_t *layer, float *input_ptr)
 {
 
     float *output_ptr = (float *)malloc(layer->input_rows * layer->input_cols * layer->filters * sizeof(float));
