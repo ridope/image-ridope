@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <stdio.h>
 
 void imfilter(float *img, float *kernel, float *img_fltr, int rows, int cols, int padsize)
 {
@@ -13,6 +14,7 @@ void imfilter(float *img, float *kernel, float *img_fltr, int rows, int cols, in
 	//image padding before performing convolution
 	float *img_pad = (float *)malloc(rows_pad * cols_pad * sizeof(float));
 	pad_image(img, img_pad, rows, cols, padsize);
+	printf("Paddin done\n");
 
 	for (i = padsize; i < rows_pad - padsize; i++)
 	for (j = padsize; j < cols_pad - padsize; j++)
@@ -30,8 +32,9 @@ void imfilter(float *img, float *kernel, float *img_fltr, int rows, int cols, in
 		*(img_fltr + cnt) = sum;
 	}
 
+	printf("Starting free\n");
 	free(img_pad);
-	img_pad = NULL;
+	printf("Done free\n");
 }
 
 float max(float a, float b)

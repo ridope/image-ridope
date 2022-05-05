@@ -2,6 +2,7 @@
 #define CONV2D_RIDOPE_H
 
 #include "activation_functions.h"
+#include <stdio.h>
 
 using namespace std;
 
@@ -37,8 +38,14 @@ class CONV2D_LAYER{
         float * ForwardPropagation(float *input_ptr){
             
             float *output_ptr = (float *)malloc(this->input_rows * this->input_cols * this->filters * sizeof(float));
+
+            printf("Output allocation done\n");
+
             float *output_ptr_temp = output_ptr;
             float *kernel = (float *)malloc(this->filters*sizeof(float));
+
+            printf("Kernel allocation done\n");
+
             int cnt_weight = 0;
             
             float bias_tmp;
@@ -55,12 +62,18 @@ class CONV2D_LAYER{
                     cnt_weight = cnt_weight + this->filters;
 
                     imfilter(input_ptr, kernel, output_ptr_temp, this->input_rows, this->input_cols, this->pad_size);
+                    printf("Conv kernel done done\n");
 
                     bias_tmp = this->bias[i];
+                    printf("Access bias done\n");
 
+                    printf("Calling Activation function\n");
                     this->act_func(output_ptr_temp, this->input_rows, this->input_cols, bias_tmp);
+                    printf("Activation function done\n");
 
                     output_ptr_temp = output_ptr_temp + this->input_rows*this->input_cols;
+
+                    printf("filter: %d, channel: %d\n", i, ch);
                 }
             }
             

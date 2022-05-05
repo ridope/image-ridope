@@ -54,17 +54,27 @@ int main(void)
 		float *output_layer_1 = layer1.ForwardPropagation(sig);
 		free(sig);
 
+		printf("Done first layer\n");
+
 		float *output_layer_2 = layer2.ForwardPropagation(output_layer_1);
 		free(output_layer_1);
+
+		printf("Done second layer\n");
 
 		float *output_layer_3 = layer3.ForwardPropagation(output_layer_2);
 		free(output_layer_2);
 
+		printf("Done third layer\n");
+
 		float *output_layer_4 = layer4.ForwardPropagation(output_layer_3);
 		free(output_layer_3);
 
+		printf("Done forth layer\n");
+
 		float *output_layer_5 = layer5.ForwardPropagation(output_layer_4);
 		free(output_layer_4);
+
+		printf("Done fifth layer\n");
 
 		for(int i=0; i < layer5.GetUnits(); i++)
 		{
