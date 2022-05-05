@@ -4,13 +4,11 @@
 #include "activation_functions.h"
 #include "math.h"
 #include "stdint.h"
-#include "float.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef  void (*activation_func)(float *img_fltr,int rows, int cols, float bias);
 
 typedef struct MAX_POOL_LAYER_TYPE
 {

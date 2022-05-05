@@ -1,5 +1,3 @@
-
-
 #ifndef ACTIVATION_FUNC_RIDOPE_H
 #define ACTIVATION_FUNC_RIDOPE_H
 
@@ -9,7 +7,8 @@
 extern "C" {
 #endif
 
-void relu(float *img_fltr,int rows, int cols);
+void relu(float *img_fltr,int rows, int cols, float bias);
+void softmax(float *img_fltr,int rows, int cols, float bias);
 
 #ifdef __cplusplus
 }

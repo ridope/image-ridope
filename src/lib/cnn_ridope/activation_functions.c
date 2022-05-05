@@ -10,3 +10,29 @@ void relu(float *img_fltr,int rows, int cols, float bias)
 		*(img_fltr + cnt) = max(*(img_fltr + cnt) + bias, 0);
 	}
 }
+
+void softmax(float *img_fltr,int rows, int cols, float bias)
+{
+	float * exps = malloc(cols*sizeof(float));
+	
+	float m = FLT_MIN;
+
+	for (int i = 0; i < cols; i++) {
+		if (img_fltr[i] > m) {
+			m = img_fltr[i];
+		}
+	}
+
+	float sum = 0.0;
+
+	for (int i = 0; i < cols; i++) {
+		exps[i] = expf(img_fltr[i] - m);
+		sum += exps[i];
+	}
+
+	for (int i = 0; i < cols; i++) {
+		img_fltr[i] = exps[i]/sum;
+	}
+
+	free(exps);
+}

@@ -25,12 +25,13 @@ float * forward_propagation(conv2d_layer_t *layer, float *input_ptr)
 
             bias_tmp = layer->bias[i];
 
-            layer->act_func(output_ptr_temp, rows, cols, bias_tmp);
+            layer->act_func(output_ptr_temp, layer->input_rows, layer->input_cols, bias_tmp);
 
             output_ptr_temp = output_ptr_temp + layer->input_rows*layer->input_cols;
         }
     }
 	
+    free(kernel);
     return output_ptr; 
 }
 

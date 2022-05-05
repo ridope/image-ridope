@@ -41,6 +41,18 @@ float max(float a, float b)
 	return c;
 }
 
+float dot_product(float *v, float *u, int size)
+{
+    float result = 0.0;
+
+    for (int i = 0; i < size; i++)
+	{
+		result += v[i]*u[i];
+	}
+        
+    return result;
+}
+
 // Replicate image padding by the factor of "padsize"
 void pad_image(float *img, float *img_pad, int rows, int cols, int padsize)
 { // This function receives an image and paddes its border in a replicative manner
