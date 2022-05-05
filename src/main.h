@@ -13,5 +13,9 @@
 #include "complex.h"
 #include "comm_ridope.h"
 
+#include "lib/cnn_ridope/activation_functions.h"
+#include "lib/cnn_ridope/conv2d_layer.h"
+#include "lib/cnn_ridope/max_pool_layer.h"
+#include "lib/cnn_ridope/dense_layer.h"
 
 #endif

@@ -1,5 +1,19 @@
 #include "conv2d_layer.h"
 
+void init_conv2d_layer(conv2d_layer_t *layer, uint8_t filters, uint8_t kernel_size, uint8_t pad_size, activation_func  act_func, float * weights, float * bias, uint8_t input_rows, uint8_t input_cols, uint8_t input_channel)
+{
+    layer->filters = filters;
+    layer->kernel_size = kernel_size;
+    layer->pad_size = pad_size;
+    layer->act_func = act_func;
+    layer->weights = weights;
+    layer->bias = bias;
+    layer->input_rows = input_rows;
+    layer->input_cols = input_cols;
+    layer->input_channel = input_channel;
+}
+
+
 float * forward_propagation_conv2d(conv2d_layer_t *layer, float *input_ptr)
 {
 

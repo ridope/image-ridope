@@ -1,5 +1,15 @@
 #include "max_pool_layer.h"
 
+void init_max_pool_layer(max_pool_layer_t *layer, uint8_t pool_size, uint8_t pad_size, uint8_t stride, uint8_t input_rows, uint8_t input_cols, uint8_t input_channel)
+{
+    layer->pool_size = pool_size;
+    layer->pad_size = pad_size;
+    layer->stride = stride;
+    layer->input_rows = input_rows;
+    layer->input_cols = input_cols;
+    layer->input_channel = input_channel;
+}
+
 float * get_max_pool(max_pool_layer_t *layer, float *input_ptr)
 {
 
