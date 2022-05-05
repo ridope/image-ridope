@@ -22,9 +22,6 @@ float * get_max_pool(max_pool_layer_t *layer, float *input_ptr)
 	    float *img_pad = (float *)malloc(rows_pad * cols_pad * sizeof(float));
         pad_image(input_ptr+ch, img_pad, layer->input_rows, layer->input_cols, layer->pad_size);
 
-        // https://github.com/nimpy/cpp-max-pool/blob/master/main.cxx
-        // https://www.codegrepper.com/code-examples/cpp/max+pooling+in+c%2B%2B
-
         max_pool = FLT_MIN;
 
         for (i = layer->pad_size; i < rows_pad - layer->pad_size; i+layer->stride)
@@ -50,6 +47,4 @@ float * get_max_pool(max_pool_layer_t *layer, float *input_ptr)
 
     return output_ptr; 
 }
-
-
 
