@@ -37,11 +37,11 @@ int main(void)
 	comm_ridope_init();
 	prompt();
 
-	CONV2D_LAYER<float,float> layer1 = CONV2D_LAYER<float,float>(32, 9, 1, relu, (float *) &layer_1_weights[0] , (float *) &layer_1_bias[0], 14, 14, 1);
+	CONV2D_LAYER<float,float> layer1 = CONV2D_LAYER<float,float>(32, 9, 1, relu, (float *) &layer_1_weights[0] , (float *) &layer_1_bias[0], 7, 7, 1);
 	MAXPOOL_LAYER layer2 = MAXPOOL_LAYER(4, 0, 2, layer1.GetInputRows(), layer1.GetInputCols(), layer1.GetInputChannel());
-	CONV2D_LAYER<int8_t,int8_t> layer3 = CONV2D_LAYER<int8_t,int8_t>(64, 9, 1, relu, (int8_t *) &layer_3_weights[0] , (int8_t *) &layer_3_bias[0], 7, 7, 32);
+	CONV2D_LAYER<int8_t, float> layer3 = CONV2D_LAYER<int8_t,float>(64, 9, 1, relu, (int8_t *) &layer_3_weights[0] , (float *) &layer_3_bias[0], 4, 4, 32);
 	MAXPOOL_LAYER layer4 = MAXPOOL_LAYER(4, 0, 2, layer3.GetInputRows(), layer3.GetInputCols(), layer3.GetInputChannel());
-	DENSE_LAYER<int8_t,int8_t> layer5 = DENSE_LAYER<int8_t,int8_t>(10, softmax, (int8_t *) &layer_5_weights[0] , (int8_t *) &layer_5_bias[0], 1, 1024, 1);
+	DENSE_LAYER<int8_t,float> layer5 = DENSE_LAYER<int8_t,float>(10, softmax, (int8_t *) &layer_5_weights[0] , (float *) &layer_5_bias[0], 1, 256, 1);
 
 	while(1) {
 		printf("Wait for img\n");
