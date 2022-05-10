@@ -60,6 +60,7 @@ On Prototyping image processing on RISC-V SoCs
 
  - Attention: 
  	- If you can only access the USB port with root access, you need to use sudo for the following commands and configure the PATH for the tools, such as Quartus, in the 		/etc/sudoers file in the secure_path flag. Otherwise, you can use the following commands without sudo.
+ 	- *THE CNN SRC DOES NOT WORK PROPERLY, DO NOT USE IT*
  
  - Build and load the SOC
    - Go to the target directory
@@ -76,7 +77,7 @@ On Prototyping image processing on RISC-V SoCs
     
     - Go to the src directory
       
-      `cd ../src/`
+      `cd ../src/fft-src/`
       
     - Build
       
@@ -96,7 +97,7 @@ On Prototyping image processing on RISC-V SoCs
     
     In the same directory as the previous step, run the python script:
     
-    `sudo python3 ./send-img.py`
+    `sudo python3 ../send-img.py`
     
     - There are only two commands available 'send' and 'reboot'.
       - Send command:
