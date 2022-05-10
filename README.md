@@ -5,7 +5,7 @@ On Prototyping image processing on RISC-V SoCs
 
 - Update Linker file
 
-  If you're not using the linker provided in the [src/linker.ld](src/linker.ld), add the following two lines at the end of the file:
+  If you're not using the linker provided in the [src/fft-src/linker.ld](src/fft-src/linker.ld), add the following two lines at the end of the file:
   ```
   PROVIDE(__heap_start = _end );
   PROVIDE(__heap_end = _start);
@@ -13,7 +13,7 @@ On Prototyping image processing on RISC-V SoCs
   
 - Update Makefile
 
-  If you're not using the Makefile provided in the [src/Makefile](src/Makefile), the Libcc library needs to be linked, to do that is necessary to use the following flag `-lgcc`:
+  If you're not using the Makefile provided in the [src/fft-src/Makefile](src/fft-src/Makefile), the Libcc library needs to be linked, to do that is necessary to use the following flag `-lgcc`:
   
   ```
     demo.elf: $(OBJECTS)
@@ -29,7 +29,7 @@ On Prototyping image processing on RISC-V SoCs
   
 - ***Optional***: Enable printf to work with float point numbers:
 
-  If you're not using the Makefile provided in the [src/Makefile](src/Makefile), add the following line after the include section, `DEPFLAGS+=-DPICOLIBC_FLOAT_PRINTF_SCANF`:
+  If you're not using the Makefile provided in the [src/fft-src/Makefile](src/fft-src/Makefile), add the following line after the include section, `DEPFLAGS+=-DPICOLIBC_FLOAT_PRINTF_SCANF`:
   
   ```
   BUILD_DIR?=../build/
