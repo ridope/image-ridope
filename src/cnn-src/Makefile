@@ -5,10 +5,10 @@ include $(SOC_DIRECTORY)/software/common.mak
 
 DEPFLAGS+=-DPICOLIBC_FLOAT_PRINTF_SCANF
 
-OBJDIR = ./obj
+OBJDIR = ../obj
 
-CNN_RIDOPE_DIR = ./lib/cnn_ridope
-LIBDIR = ./lib/ufft
+CNN_RIDOPE_DIR = ../lib/cnn_ridope
+LIBDIR = ../lib/ufft
 OBJECTS = $(OBJDIR)/comm_ridope.o $(OBJDIR)/isr.o $(OBJDIR)/main.o $(OBJDIR)/crt0.o $(OBJDIR)/activation_functions.o $(OBJDIR)/conv2d_layer.o $(OBJDIR)/dense_layer.o $(OBJDIR)/max_pool_layer.o $(OBJDIR)/utils.o
 OBJECTS += $(OBJDIR)/layer_1_bias.o $(OBJDIR)/layer_3_bias.o $(OBJDIR)/layer_5_bias.o
 OBJECTS += $(OBJDIR)/layer_1_weights.o $(OBJDIR)/layer_3_weights.o $(OBJDIR)/layer_5_weights.o
